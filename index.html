@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heaven Dog with Clouds</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+        .cloud:before, .cloud:after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        .cloud { width: 100px; height: 40px; }
+        .cloud:before { width: 50px; height: 50px; top: -25px; left: 10px; }
+        .cloud:after { width: 70px; height: 70px; top: -35px; right: 10px; }
+
+        .static-cloud {
+            position: absolute;
+            z-index: 5;
+        }
+
+        .foreground-cloud {
+            z-index: 15;
+        }
+
+        .dog-cloud {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 80px;
+            z-index: 9;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        .dog-cloud:before { width: 100px; height: 100px; top: -50px; left: 20px; }
+        .dog-cloud:after { width: 140px; height: 140px; top: -70px; right: 20px; }
+
+        .heaven-dog {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translate(-50%, -80%);
+            width: 200px;
+            height: auto;
+            z-index: 10;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -60%); }
+        }
+
+        .dog-treat {
+            position: absolute;
+            width: 100px;
+            height: auto;
+            z-index: 20;
+        }
+
+        .heaven-text {
+            position: absolute;
+            left: 50%;
+            top: 70%;
+            transform: translateX(-50%);
+            font-family: 'Tangerine', cursive;
+            font-size: 72px;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 25;
+        }
+
+        .social-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 30;
+        }
+
+        .social-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .social-button:hover {
+            transform: scale(1.1);
+        }
+
+        .social-button img {
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dog-cloud cloud">
+        <img src="https://i.postimg.cc/tCg7VK8C/Heaven-dog-no-bkg.png" alt="Heaven Dog" class="heaven-dog" id="heavenDog">
+    </div>
+    <div class="heaven-text">Heaven Dog</div>
+
+    <div class="social-buttons">
+        <a href="https://pump.fun" target="_blank" class="social-button">
+            <img src="https://i.postimg.cc/sxthHstT/pump.png" alt="Pump.fun">
+        </a>
+        <a href="https://twitter.com" target="_blank" class="social-button">
+            <img src="https://abs.twimg.com/favicons/twitter.ico" alt="Twitter">
+        </a>
+        <a href="https://dexscreener.com" target="_blank" class="social-button">
+            <img src="https://dexscreener.com/favicon.ico" alt="Dexscreener">
+        </a>
+        <a href="https://telegram.org" target="_blank" class="social-button">
+            <img src="https://telegram.org/img/favicon.ico" alt="Telegram">
+        </a>
+    </div>
+
+    <script>
+        const numBackgroundClouds = 15;
+        const numForegroundClouds = 5;
+        const numStaticClouds = 5;
+        const treats = [];
+
+        function createCloud(isStatic = false, isForeground = false) {
+            const cloud = document.createElement('div');
+            cloud.className = isStatic ? 'cloud static-cloud' : 'cloud';
+            if (isForeground) cloud.classList.add('foreground-cloud');
+            cloud.style.top = `${Math.random() * 100}%`;
+            
+            if (isStatic) {
+                cloud.style.left = `${Math.random() * 100}%`;
+                const scale = 0.5 + Math.random() * 1.5;
+                cloud.style.transform = `scale(${scale})`;
+            } else {
+                cloud.style.left = '-100px';
+                const speed = 15 + Math.random() * 10;
+                cloud.style.transition = `transform ${speed}s linear`;
+                
+                setTimeout(() => {
+                    cloud.style.transform = `translateX(${window.innerWidth + 100}px)`;
+                }, 100);
+
+                cloud.addEventListener('transitionend', () => {
+                    cloud.style.transition = 'none';
+                    cloud.style.transform = 'translateX(-100px)';
+                    setTimeout(() => {
+                        cloud.style.transition = `transform ${speed}s linear`;
+                        cloud.style.transform = `translateX(${window.innerWidth + 100}px)`;
+                    }, 100);
+                });
+            }
+
+            document.body.appendChild(cloud);
+        }
+
+        for (let i = 0; i < numStaticClouds; i++) {
+            createCloud(true);
+        }
+
+        for (let i = 0; i < numBackgroundClouds; i++) {
+            createCloud();
+        }
+
+        for (let i = 0; i < numForegroundClouds; i++) {
+            createCloud(false, true);
+        }
+
+        const heavenDog = document.getElementById('heavenDog');
+        for (let i = 0; i < 4; i++) {
+            const treat = document.createElement('img');
+            treat.src = 'https://i.postimg.cc/mrQrS4Yv/Heaven-dog-treat.png';
+            treat.className = 'dog-treat';
+            document.body.appendChild(treat);
+            treats.push(treat);
+        }
+
+        function rotateTreats() {
+            const time = Date.now() * 0.001;
+            treats.forEach((treat, i) => {
+                const angle = time + i * Math.PI / 2;
+                const radius = 200;
+                const dogRect = heavenDog.getBoundingClientRect();
+                const centerX = dogRect.left + dogRect.width / 2;
+                const centerY = dogRect.top + dogRect.height / 2;
+                treat.style.left = `${centerX + Math.cos(angle) * radius - 50}px`;
+                treat.style.top = `${centerY + Math.sin(angle) * radius - 50}px`;
+            });
+            requestAnimationFrame(rotateTreats);
+        }
+
+        rotateTreats();
+    </script>
+</body>
+</html>
